@@ -116,7 +116,7 @@
   
   <!-- Necessary info -->
   <p class= "par">You can now search the address from the ID<p> 
-  <label>NUME COMPLET:</label><div class = "resultOCRn" ></div>
+  <div class = "resultOCRn" ></div>
   <label>ADRESA:</label><div class = "resultOCR" ></div>
   
   
@@ -271,21 +271,30 @@ function getBase64(file) {
 				xmlhttp.onreadystatechange = function()  {		
 					if ((xmlhttp.readyState == 4 ) && (xmlhttp.status == 200))
 					{
-						    alert(xmlhttp.responseText);
+						   // alert(xmlhttp.responseText);
 							var returnValue = JSON.parse(xmlhttp.responseText); // Se ia raspunsul in format string si il face JSON	
 							var result  = returnValue["ParsedResults"][0]["ParsedText"];
-							alert(result);
+							//alert(result);
 							
 							
 						    var newValue = JSON.stringify(result);
 						    
 						   
 			                //NUME															
-                			var lastName = newValue.match(/nIDROU(.*?)<</);	
+                		  //var lastName = newValue.match(/nIDROU(.*?)<</);
+                			var lastName = result.indexOf('Last name');
+                			var indexz =result.indexOf('Z');
+                			var stringL = result.substring(lastName,indexz);
+                			
+                			
                 			//PRENUME
-                			var firstName = newValue.match(/First(.?)n(.?)n/);		
+                			//var firstName = newValue.match(/First(.?)n(.?)n/);	
+                			var firstName = result.indexOf('First name');
+                			var indexF =result.indexOf('Cet');
+                			var stringF = result.substring(firstName,indexF);
+                			
                 			//NUME COMPLET
-                			var nComplet = lastName+' '+firstName;
+                			var nComplet = stringF+' '+stringL;
                 		
 			                //ADRESA
                 			var indexDom = result.indexOf('Domiciliu');  
@@ -314,6 +323,8 @@ function getBase64(file) {
                     			}
 						   
 						  
+						   
+						    
 						    const htmlresult = `<span>${adresaCompleta}</span>` ;
                             const resultDiv = document.querySelector('.resultOCR');
                             resultDiv.innerHTML = htmlresult;

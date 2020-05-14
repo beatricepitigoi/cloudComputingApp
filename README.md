@@ -104,6 +104,7 @@ __defer__: Asks the browser to parse the HTML document first before loading the 
 
 # Flux de Date
 
+
 Primul lucru de care ne lovim cand deschidem aplicatia sunt cele doua butoane
 de Uploud si Evaluate.
 
@@ -111,9 +112,38 @@ de Uploud si Evaluate.
 Uploud iti permite search-ul printre fisierele din calculator pentru a
 inregistra Cartea de Identitatea a persoanei dorite.
 
+
+### Request/Response
 2.Evaluate file
 Apeleaza OCR API (POST method) si ne intoarce sub forma de JSON, datele din imagine.
 ![UploudImg](imgs/server.png)
+
+```JSON
+{
+      "ParsedResults":[
+      {"TextOverlay":{"Lines":[],
+      "HasOverlay":true,"Message":"Total lines: 0"},
+      "TextOrientation":"0","FileParseExitCode":1,
+      "ParsedText":"ROUMANIE JRONLANIA ROMANIA\nCARTE DE IDENTITATE\n
+                    SERIA seria NR nr\n
+                    CARTE\nIDENTITY\nCARD\nD'IDENTITE\nCNP cnp\n
+                    Nume/Nom/Last name\nPITIGOI\n\nPrenume/Prenom/First name\nBEATRICE-LILIANA\nCetatenie/Nationalite/Nationality\nRomână/ ROU\n
+                    Loc naştere/Lieu de naissance/Place of birth\n
+                    Mun.BucureştiSec.o\nDomiciliu/Adresse/AddresS\n
+                    Mun.Bucureşti Sec.6\nSex/Sexe/Sex\nF\n
+                    Str.Sibiu si restul adresei ...\n847 B\n
+                    IDROUPITIG0I<<BEATRICE<LILIANA<<<<<<\n
+                    alteDateConfidentiale\n
+                    Emisd delDelivree par/lssued by\nS.P.C.E.P. Sector o
+                    \nValabilitate/Validite/Validity\n03.06.15-23.05.2022",
+                    "ErrorMessage":"","ErrorDetails":""}],
+                    "OCRExitCode":1,
+      "IsErroredOnProcessing":false,
+      "ProcessingTimeInMilliseconds":"23433",
+      "SearchablePDFURL":""
+      }
+
+```
 
 3.Se parseaza JSON-ul si se afiseaza textul extras. 
 In cazul nostru, numele si adresa.
@@ -123,5 +153,9 @@ In cazul nostru, numele si adresa.
 ![UploudImg2](imgs/adresa.png)
 
 
+# Referinte
+
+https://ocr.space/
+https://cloud.google.com/maps-platform
 
 

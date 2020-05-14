@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>OCR API</title>
+
+
+
+<!---------------------------- CSS------------------------------------ -->
+
+<style>
+   
+         .btn{
+            
+          background-color: #66d9ff;
+          border: none;
+          color: white;
+          padding: 15px 32px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          font-size: 16px;
+          margin: 4px 2px;
+          cursor: pointer;
+          border-radius: 12px;
+          margin: 0;
+          position: absolute;
+          top: 70%;
+          left: 50%;
+          -ms-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+            
+            
+        }
+        
+        .container { 
+          height: 200px;
+          position: relative;
+         
+        }
+
+       
+        
+        .custom-file-upload {
+            border: 1px solid #ccc;
+            display: inline-block;
+            padding: 6px 12px;
+            cursor: pointer;
+            margin: 0;
+            position: absolute;
+            top: 47%;
+            left: 50%;
+            -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+            background-color: #66d9ff;
+            color: white;
+            border-radius: 12px;
+            
+            
+        }
+
+
+        .title{
+        
+            position: absolute;
+            top: 3%;
+            left: 30%;
+            background-color:black ;
+            color: white;
+            
+        
+        }
+
+        .par{
+            
+            background-color:black ;
+            color: white;
+            text-align: center;
+        
+            }
+
+            #map{
+              height:400px;
+              width:100%;
+            }
+  </style>
+<!------------------------------------------------------------------> 
+ 
+</head>
+
+
+
+
+
+<body>
+    <!--onload='onload()'-->
+  <div class= "container">  
+      <h1 class = "title" >Please select a file and then hit Evaluate: </h1>
+  
+  <br/>
+  <br/>
+  
+  <label class="custom-file-upload">
+      <input id="file" type="file"/>
+      <i class="fa fa-cloud-upload"></i> Upload ID
+  </label>
+  
+  <br/>
+  <br/>
+      <button id="button" class= "btn">Evaluate</button>
+  <br/>
+  <br/>
+  
+ </div> 
+  
+  <!-- Necessary info -->
+  <p class= "par">You can now search the address from the ID<p> 
+  <label>NUME COMPLET:</label><div class = "resultOCRn" ></div>
+  <label>ADRESA:</label><div class = "resultOCR" ></div>
+  
+  
+  <!-- Search input -->
+  <input id="searchInput" class="controls" type="text" placeholder="Enter a location">
+  <div id="map"></div>
+  
+  
+  
+ <!-- Display geolocation data -->
+    <ul class="geo-data">
+    <li>Full Address: <span id="location"></span></li>
+    <li>Postal Code: <span id="postal_code"></span></li>
+    <li>Country: <span id="country"></span></li>
+    <li>Latitude: <span id="lat"></span></li>
+    <li>Longitude: <span id="lon"></span></li>
+</ul>
+
+
+
+
+</body>
+</html>
+
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyA_SCgCYYPVMzAUfftimyDpiUyibUxVXLU&callback=initMap" async defer></script>
+<script>
+
+//----------------------------------------GOOGLE MAPS API--------------------------------------------------------------------
+
+function initMap() {
+    var map = new google.maps.Map(document.getElementById('map'), {
+      center: {lat: 44.439663, lng: 26.096306},
+      zoom: 13
+    });
+    var input = document.getElementById('searchInput');
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+    var autocomplete = new google.maps.places.Autocomplete(input);
+    autocomplete.bindTo('bounds', map);
+
+    var infowindow = new google.maps.InfoWindow();
+    var marker = new google.maps.Marker({
+        map: map,
+        anchorPoint: new google.maps.Point(0, -29)
+    });
+
+    autocomplete.addListener('place_changed', function() {
+        infowindow.close();
+        marker.setVisible(false);
+        var place = autocomplete.getPlace();
+        if (!place.geometry) {
+            window.alert("Autocomplete's returned place contains no geometry");
+            return;
+        }
+  
+        // If the place has a geometry, then present it on a map.
+        if (place.geometry.viewport) {
+            map.fitBounds(place.geometry.viewport);
+        } else {
+            map.setCenter(place.geometry.location);
+            map.setZoom(17);
+        }
+        marker.setIcon(({
+            url: place.icon,
+            size: new google.maps.Size(71, 71),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(17, 34),
+            scaledSize: new google.maps.Size(35, 35)
+        }));
+        marker.setPosition(place.geometry.location);
+        marker.setVisible(true);
+    
+        var address = '';
+        if (place.address_components) {
+            address = [
+              (place.address_components[0] && place.address_components[0].short_name || ''),
+              (place.address_components[1] && place.address_components[1].short_name || ''),
+              (place.address_components[2] && place.address_components[2].short_name || '')
+            ].join(' ');
+        }
+    
+        infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
+        infowindow.open(map, marker);
+      
+        // Location details
+        for (var i = 0; i < place.address_components.length; i++) {
+            if(place.address_components[i].types[0] == 'postal_code'){
+                document.getElementById('postal_code').innerHTML = place.address_components[i].long_name;
+            }
+            if(place.address_components[i].types[0] == 'country'){
+                document.getElementById('country').innerHTML = place.address_components[i].long_name;
+            }
+        }
+        document.getElementById('location').innerHTML = place.formatted_address;
+        document.getElementById('lat').innerHTML = place.geometry.location.lat();
+        document.getElementById('lon').innerHTML = place.geometry.location.lng();
+    });
+}
+      
+
+//----------OCR API------------------------------------------------------------------
+
+
+	document.getElementById('button').addEventListener('click', function() {
+		var files = document.getElementById('file').files;
+		if (files.length > 0) {
+		getBase64(files[0]);
+		document.querySelector('.resultOCR').style.display = 'block';
+	//	document.querySelector('.resultOCRn').style.display = 'block';
+	
+		}
+	});
+
+//------------------
+function onload() { 
+        
+       document.querySelector('.resultOCR').style.display = 'none';
+       //document.querySelector('.resultOCRn').style.display = 'none';
+    }
+
+//----------------
+
+function getBase64(file) {
+		
+	   var reader = new FileReader();
+	   reader.readAsDataURL(file);
+	   reader.onload = function () {
+		 basicAjax(reader.result);
+	   };
+	   reader.onerror = function (error) {
+		 console.log('Error: ', error);
+	   };
+	}
+	
+	function basicAjax(b64){
+    
+		var xmlhttp = false;
+		  try
+			{
+			 var xmlhttp = new XMLHttpRequest();
+		  }
+		   catch (e){
+				xmlhttp = false; 
+			}
+		
+				var data = "OCREngine=2&detectOrientation=true&scale=true&base64image=" + encodeURIComponent(b64);
+				xmlhttp.open("POST", "https://api.ocr.space/parse/image?"+String(new Date().getTime()),false); //OPEN SYNC REQUEST
+				xmlhttp.setRequestHeader("apikey", "5f80a2841388957"); // Codul de la api
+				xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); // Tipul mesajului
+			
+				
+				xmlhttp.onreadystatechange = function()  {		
+					if ((xmlhttp.readyState == 4 ) && (xmlhttp.status == 200))
+					{
+						    alert(xmlhttp.responseText);
+							var returnValue = JSON.parse(xmlhttp.responseText); // Se ia raspunsul in format string si il face JSON	
+							var result  = returnValue["ParsedResults"][0]["ParsedText"];
+							alert(result);
+							
+							
+						    var newValue = JSON.stringify(result);
+						    
+						   
+			                //NUME															
+                			var lastName = newValue.match(/nIDROU(.*?)<</);	
+                			//PRENUME
+                			var firstName = newValue.match(/First(.?)n(.?)n/);		
+                			//NUME COMPLET
+                			var nComplet = lastName+' '+firstName;
+                		
+			                //ADRESA
+                			var indexDom = result.indexOf('Domiciliu');  
+                			var indexID = result.indexOf('IDROU'); 
+                			var tempstring = result.substring(indexDom,indexID); //take the string from domiciliu
+                			var respByLines = tempstring.split("\n");
+                			                
+			          
+			                var adresaCompleta="";	
+                    			   for (var i=0; i<respByLines.length; i++){				 
+                    				    if( !respByLines[i].match("/") ){
+                    						   if(!respByLines[i].match(/<</)){ 
+                    							    if(respByLines[i].length >=10){
+                    									   if(!respByLines[i].match(/[0-9].[0-9].[0-9]/)){
+                    										    if(!respByLines[i].match(/[A-Z]{1}.[A-Z]{1}.[A-Z]{1}./)){
+                    												   if(respByLines[i]){
+                    													 
+                    																	adresaCompleta += ((i>0)?" ":"")+respByLines[i];
+                    																
+                    													  }
+                    										    }
+                    										}			
+                    								 }
+                    						  }				
+                    					}
+                    			}
+						   
+						  
+						    const htmlresult = `<span>${adresaCompleta}</span>` ;
+                            const resultDiv = document.querySelector('.resultOCR');
+                            resultDiv.innerHTML = htmlresult;
+							
+							const htmlresultn = `<span>${nComplet}</span>` ;
+                            const resultDivn = document.querySelector('.resultOCRn');
+                            resultDivn.innerHTML = htmlresultn;
+		
+							
+					}
+				}
+		
+		   xmlhttp.send(data);
+	 
+	}
+	
+
+//----------------------------------------------------------------------------------------	
+
+
+
+</script>

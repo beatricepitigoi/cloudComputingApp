@@ -103,6 +103,25 @@ __defer__: Asks the browser to parse the HTML document first before loading the 
 ````
 
 # Flux de Date
+
+Primul lucru de care ne lovim cand deschidem aplicatia sunt cele doua butoane
+de Uploud si Evaluate.
+
+1.Upload file
+Uploud iti permite search-ul printre fisierele din calculator pentru a
+inregistra Cartea de Identitatea a persoanei dorite.
+
+2.Evaluate file
+Apeleaza OCR API (POST method) si ne intoarce sub forma de JSON, datele din imagine.
 ![UploudImg](imgs/server.png)
+
+3.Se parseaza JSON-ul si se afiseaza textul extras. 
+In cazul nostru, numele si adresa.
+![UploudImg2](imgs/datePers.png)
+
+4.Curierul poate cauta adresa in bara de search de mai jos.
+![UploudImg2](imgs/adresa.png)
+
+
 
 

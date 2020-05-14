@@ -272,6 +272,7 @@ function getBase64(file) {
 					if ((xmlhttp.readyState == 4 ) && (xmlhttp.status == 200))
 					{
 						   // alert(xmlhttp.responseText);
+						   console.log(xmlhttp.responseText);
 							var returnValue = JSON.parse(xmlhttp.responseText); // Se ia raspunsul in format string si il face JSON	
 							var result  = returnValue["ParsedResults"][0]["ParsedText"];
 							//alert(result);

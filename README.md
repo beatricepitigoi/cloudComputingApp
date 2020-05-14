@@ -155,7 +155,7 @@ In cazul nostru, numele si adresa.
 
 # Referinte
 
-https://ocr.space/
-https://cloud.google.com/maps-platform
+ * https://ocr.space/
+ * https://cloud.google.com/maps-platform
 
 
